@@ -1,2 +1,29 @@
-package com.matiej.springsec_acl.user;public class UserServiceImpl {
+package com.matiej.springsec_acl.user;
+
+import com.matiej.springsec_acl.global.exceptions.EmailExistsException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+
+    @Override
+    public UserEntity registerNewUser(UserEntity user) throws EmailExistsException {
+        if (emailExist(user.getEmail())) {
+            throw new EmailExistsException("There is an account with that email address: " + user.getEmail());
+        }
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Cant find user: " + email));
+    }
+
+    private boolean emailExist(final String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }
