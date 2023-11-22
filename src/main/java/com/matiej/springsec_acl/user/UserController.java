@@ -21,7 +21,7 @@ public class UserController {
     @GetMapping
     public ModelAndView list() {
         List<UserEntity> users = userService.findAll();
-        return new ModelAndView(" list", "users", users);
+        return new ModelAndView("list", "users", users);
     }
 
     @GetMapping("{id}")
